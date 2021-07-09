@@ -1,0 +1,13 @@
+.filter_input {
+  display: block;
+  margin: 5px auto;
+}
+
+.filter_label {
+  display: block;
+  margin: 5px auto;
+  text-align: center;
+  color: rgb(35, 107, 35);
+  font-style: italic;
+  font-weight: 600;
+}

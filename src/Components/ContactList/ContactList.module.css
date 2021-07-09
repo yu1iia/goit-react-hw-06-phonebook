@@ -1,0 +1,30 @@
+.users {
+  list-style-type: none;
+}
+.removeContactButton {
+  display: inline-block;
+  color: rgb(35, 107, 35);
+  background-color: rgb(161, 230, 159);
+  border-radius: 3px;
+  border: none;
+  padding: 0px 10px;
+  margin-right: 30px;
+  height: 20px;
+  transition: all 0.25s ease-in-out;
+}
+.removeContactButton:hover {
+  box-shadow: 0px 0px 3px 3px rgba(256, 256, 256, 0.94);
+  background-color: rgb(238, 39, 148);
+  font-weight: 700;
+  cursor: pointer;
+}
+.userInfo {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  font-weight: 500;
+}
+.userInfo p {
+  font-style: italic;
+  color: rgb(35, 107, 35);
+}
