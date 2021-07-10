@@ -1,81 +1,85 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-
-//styles
-import s from './ContactForm.module.css';
-
-//npm
+import React from 'react';
+import { useState } from 'react';
 import shortid from 'shortid';
-class ContactForm extends Component {
-  state = {
-    name: '',
-    number: '',
-  };
-  static propTypes = {
-    submitHandler: PropTypes.func.isRequired,
-  };
+import s from './ContactForm.module.css';
+import { useSelector, useDispatch } from 'react-redux';
+import contactsActions from '../../redux/actions';
+import { getContacts } from '../../redux/selectors';
 
-  handleInputChange = e => {
+export default function ContactForm() {
+  const [name, setName] = useState('');
+  const [number, setNumber] = useState('');
+
+  const nameInputId = shortid.generate();
+  const numberInputId = shortid.generate();
+
+  const dispatch = useDispatch();
+  const contacts = useSelector(getContacts);
+
+  const handleChange = e => {
     const { name, value } = e.currentTarget;
-    this.setState({ [name]: value });
+    switch (name) {
+      case 'name':
+        setName(value);
+        break;
+      case 'number':
+        setNumber(value);
+        break;
+      default:
+        return;
+    }
   };
 
-  formSubmitHandler = e => {
+  const handleSubmit = e => {
     e.preventDefault();
-    const { name, number } = this.state;
 
-    const newContact = {
-      name: name,
-      number: number,
-      id: shortid.generate(),
-    };
-    this.props.submitHandler(newContact);
+    if (contacts.find(contact => contact.name === name)) {
+      alert(`${name} is in contacts.`);
+      reset();
+      return;
+    }
 
-    this.reset();
+    dispatch(contactsActions.addContact(name, number));
+    reset();
   };
 
-  reset = () => {
-    this.setState({ name: '', number: '' });
+  const reset = () => {
+    setName('');
+    setNumber('');
   };
 
-  render() {
-    return (
-      <form onSubmit={this.formSubmitHandler}>
-        <label className={s.form_label}>
-          Name
-          <input
-            className={s.form_input}
-            type="text"
-            name="name"
-            value={this.state.name}
-            onChange={this.handleInputChange}
-            pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-            title="Имя может состоять только из букв, апострофа, тире и пробелов. Например Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan и т. п."
-            required
-          />
-        </label>
-        <label className={s.form_label}>
-          Number
-          <input
-            className={s.form_input}
-            type="tel"
-            name="number"
-            value={this.state.number}
-            onChange={this.handleInputChange}
-            pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
-            title="Номер телефона должен состоять цифр и может содержать пробелы, тире, круглые скобки и может начинаться с +"
-            required
-          />
-        </label>
-        <button className={s.addButton}>Add contacts</button>
-      </form>
-    );
-  }
+  return (
+    <form onSubmit={handleSubmit}>
+      <label className={s.form_label} htmlFor={nameInputId}>
+        Name
+        <input
+          className={s.form_input}
+          type="text"
+          name="name"
+          value={name}
+          onChange={handleChange}
+          pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
+          title="Имя может состоять только из букв, апострофа, тире и пробелов. Например Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan и т. п."
+          required
+        />
+      </label>
+      <label className={s.form_label} htmlFor={numberInputId}>
+        Number
+        <input
+          className={s.form_input}
+          type="text"
+          name="number"
+          value={number}
+          onChange={handleChange}
+          pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
+          title="Номер телефона должен состоять цифр и может содержать пробелы, тире, круглые скобки и может начинаться с +"
+          required
+        />
+      </label>
+
+      <button className={s.addButton} type="submit">
+        Add contacts
+      </button>
+    </form>
+  );
 }
-
-// eslint-disable-next-line react/no-typos
-ContactForm.PropTypes = {
-  onSubmit: PropTypes.func.isRequired,
-};
-
-export default ContactForm;
